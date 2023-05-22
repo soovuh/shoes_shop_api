@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+
+from shoes.models import Shoe
+from shoes.serializers import ShoeSerializer
+
+
+class ShoeViewSet(ModelViewSet):
+    queryset = Shoe.objects.all()
+    serializer_class = ShoeSerializer
