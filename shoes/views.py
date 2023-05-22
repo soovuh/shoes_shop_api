@@ -6,5 +6,5 @@ from shoes.serializers import ShoeSerializer
 
 
 class ShoeViewSet(ModelViewSet):
-    queryset = Shoe.objects.all()
+    queryset = Shoe.objects.all().prefetch_related('qty')
     serializer_class = ShoeSerializer
