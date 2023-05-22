@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from shoes.models import Shoe
+from shoes.models import Shoe, Brand
+
 
 class ShoeSerializer(serializers.ModelSerializer):
     qty = serializers.SerializerMethodField()
@@ -19,3 +20,9 @@ class ShoeSerializer(serializers.ModelSerializer):
         qty_sizes = obj.qty.all()
         size_list = [qty_size.size for qty_size in qty_sizes]
         return size_list
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ('name',)
