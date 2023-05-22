@@ -3,3 +3,4 @@ __pycache__
 private.py
 .idea
 db.sqlite3
+media
