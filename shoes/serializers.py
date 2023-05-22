@@ -1,21 +1,14 @@
 from rest_framework import serializers
-from shoes.models import Shoe, QtySize
-
-
-#
-# class QtySizeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = QtySize
-#         fields = ('size', 'qty')
-
+from shoes.models import Shoe
 
 class ShoeSerializer(serializers.ModelSerializer):
     qty = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
+    brand_name = serializers.CharField(max_length=50)
 
     class Meta:
         model = Shoe
-        fields = ('id', 'info', 'href', 'image', 'price', 'sex', 'type', 'brand', 'sale', 'views', 'qty', 'size')
+        fields = ('id', 'info', 'href', 'image', 'price', 'sex', 'type', 'brand_name', 'sale', 'views', 'qty', 'size')
 
     def get_qty(self, obj):
         qty_sizes = obj.qty.all()
