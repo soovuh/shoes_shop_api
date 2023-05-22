@@ -9,7 +9,7 @@ class ShoeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shoe
-        fields = ('id', 'info', 'href', 'image', 'price', 'sex', 'type', 'brand_name', 'sale', 'views', 'qty', 'size')
+        fields = ('id', 'info', 'name', 'image', 'price', 'sex', 'type', 'brand_name', 'sale', 'views', 'qty', 'size')
 
     def get_qty(self, obj):
         qty_sizes = obj.qty.all()

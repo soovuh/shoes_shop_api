@@ -40,7 +40,6 @@ class Shoe(models.Model):
 
     name = models.CharField(max_length=255)
     info = models.TextField()
-    href = models.CharField(max_length=255, default='./product.html')
     image = models.ImageField(upload_to='item_images', blank=True, null=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     sex = models.CharField(choices=SEX_CHOICES, max_length=10)
