@@ -21,6 +21,10 @@ class ShoeSerializer(serializers.ModelSerializer):
         size_list = [qty_size.size for qty_size in qty_sizes]
         return size_list
 
+class HotDealsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shoe
+        fields = ('id', 'name', 'image', 'price', 'sale')
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
