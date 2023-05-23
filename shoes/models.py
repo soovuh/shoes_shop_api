@@ -21,14 +21,6 @@ class Shoe(models.Model):
         ('male', 'male'),
         ('female', 'female')
     )
-    BRAND_CHOICES = (
-        ('Nike', 'Nike'),
-        ('Adidas', 'Adidas'),
-        ('Kappa', 'Kappa'),
-        ('Vans', 'Vans'),
-        ('Puma', 'Puma'),
-        ('Reebok', 'Reebok')
-    )
     TYPE_CHOICES = (
         ('running', 'running'),
         ('retro', 'retro'),
