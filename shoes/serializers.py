@@ -22,6 +22,11 @@ class ShoeSerializer(serializers.ModelSerializer):
         return size_list
 
 
+class HotDealsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shoe
+        fields = ('id', 'name', 'image', 'price', 'sale')
+
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand

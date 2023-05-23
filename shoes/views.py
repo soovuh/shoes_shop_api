@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from shoes.models import Shoe, Brand
-from shoes.serializers import ShoeSerializer, BrandSerializer
+from shoes.serializers import ShoeSerializer, BrandSerializer, HotDealsSerializer
 
 
 class ShoeViewSet(ModelViewSet):
@@ -21,8 +21,13 @@ class ShoeViewSet(ModelViewSet):
         return Response({'message': 'Views count incremented'})
 
 
+class HotDealsView(ModelViewSet):
+    queryset = Shoe.objects.order_by('-sale').annotate(
+        brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
+    )[:9]
+    serializer_class = HotDealsSerializer
+
+
 class BrandViewSet(ModelViewSet):
     queryset = Brand.objects.all().values('name')
     serializer_class = BrandSerializer
-
-
