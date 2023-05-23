@@ -7,7 +7,7 @@ from rest_framework import status
 from django.urls import reverse
 
 from shoes.models import Brand, QtySize, Shoe
-from shoes.serializers import ShoeSerializer
+from shoes.serializers import ShoeSerializer, HotDealsSerializer
 
 
 class ShoeAPITestCase(APITestCase):
@@ -44,18 +44,28 @@ class ShoeAPITestCase(APITestCase):
         )
         self.shoe_2.qty.set([self.qty_3])
 
-    def test_get(self):
+    def test_get_shoes(self):
         factory = APIRequestFactory()
-        url = reverse('shoe-list')
+        url = '/shoe/'
         request = factory.get(url)
         response = self.client.get(url)
         shoes = Shoe.objects.all().annotate(
             brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
         ).prefetch_related('qty')
         serializer_data = ShoeSerializer(shoes, many=True, context={'request': request}).data
-
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serializer_data, response.data)
 
+    def test_get_hotdeals_shoes(self):
+        factory = APIRequestFactory()
+        url = '/hotdeals/'
+        request = factory.get(url)
+        response = self.client.get(url)
+        hotdeals = Shoe.objects.order_by('-sale').annotate(
+            brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
+        )[:9]
+        serializer_data = HotDealsSerializer(hotdeals, many=True, context={'request': request}).data
 
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(serializer_data, response.data)
 
