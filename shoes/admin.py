@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from .models import Shoe, QtySize, Brand
+from .models import Shoe, QtySize, Brand, HomePageCarousel
 
 
 @admin.register(Shoe)
@@ -15,5 +15,10 @@ class SizeAdmin(ModelAdmin):
 
 
 @admin.register(Brand)
+class SizeAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(HomePageCarousel)
 class SizeAdmin(ModelAdmin):
     pass

@@ -44,3 +44,11 @@ class Shoe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class HomePageCarousel(models.Model):
+    image = models.ImageField(upload_to='carousel_images')
+    sequence = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.sequence

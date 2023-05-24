@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from shoes.models import Shoe, Brand
-from shoes.serializers import ShoeSerializer, BrandSerializer, HotDealsSerializer
+from shoes.models import Shoe, Brand, HomePageCarousel
+from shoes.serializers import ShoeSerializer, BrandSerializer, HotDealsSerializer, CarouselSerializer
 
 
 class ShoeViewSet(ModelViewSet):
@@ -26,6 +26,11 @@ class HotDealsView(ModelViewSet):
         brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
     )[:9]
     serializer_class = HotDealsSerializer
+
+
+class CarouselView(ModelViewSet):
+    queryset = HomePageCarousel.objects.all().order_by('sequence')[:9]
+    serializer_class = CarouselSerializer
 
 
 class BrandViewSet(ModelViewSet):
