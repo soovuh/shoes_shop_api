@@ -6,8 +6,8 @@ from rest_framework.test import APITestCase, APIRequestFactory
 from rest_framework import status
 from django.urls import reverse
 
-from shoes.models import Brand, QtySize, Shoe
-from shoes.serializers import ShoeSerializer, HotDealsSerializer
+from shoes.models import Brand, QtySize, Shoe, HomePageCarousel
+from shoes.serializers import ShoeSerializer, HotDealsSerializer, CarouselSerializer
 
 
 class ShoeAPITestCase(APITestCase):
@@ -43,6 +43,15 @@ class ShoeAPITestCase(APITestCase):
             views=2,
         )
         self.shoe_2.qty.set([self.qty_3])
+        self.carousel_1 = HomePageCarousel.objects.create(
+            image='http://127.0.0.1:8000/media/item_images/Adidas-Super-Star.jpg',
+            sequence=1
+        )
+        self.carousel_2 = HomePageCarousel.objects.create(
+            image='http://127.0.0.1:8000/media/item_images/Reebok-Classic.jpg',
+            sequence=2
+        )
+
 
     def test_get_shoes(self):
         factory = APIRequestFactory()
@@ -69,3 +78,13 @@ class ShoeAPITestCase(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serializer_data, response.data)
 
+    def test_get_carousel_objects(self):
+        factory = APIRequestFactory()
+        url = '/carousel/'
+        request = factory.get(url)
+        response = self.client.get(url)
+        carousel = HomePageCarousel.objects.all().order_by('sequence')[:9]
+        serializer_data = CarouselSerializer(carousel, many=True, context={'request': request}).data
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(serializer_data, response.data)

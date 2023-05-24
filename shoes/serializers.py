@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from shoes.models import Shoe, Brand
+from shoes.models import Shoe, Brand, HomePageCarousel
 
 
 class ShoeSerializer(serializers.ModelSerializer):
@@ -27,7 +27,14 @@ class HotDealsSerializer(serializers.ModelSerializer):
         model = Shoe
         fields = ('id', 'name', 'image', 'price', 'sale')
 
+
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ('name',)
+
+
+class CarouselSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HomePageCarousel
+        fields = ('image', 'sequence')
