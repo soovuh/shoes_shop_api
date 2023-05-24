@@ -1,5 +1,7 @@
 from django.db.models import Subquery, OuterRef
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -12,6 +14,9 @@ class ShoeViewSet(ModelViewSet):
         brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
     ).prefetch_related('qty')
     serializer_class = ShoeSerializer
+    # search url looks like this: http://127.0.0.1:8000/shoe/?search=adidas
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['name', 'brand_name', 'type', 'info']
 
     @action(detail=True, methods=['post'])
     def increment_views(self, request, pk=None):
@@ -26,6 +31,7 @@ class HotDealsView(ModelViewSet):
         brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
     )[:9]
     serializer_class = HotDealsSerializer
+
 
 
 class CarouselView(ModelViewSet):
