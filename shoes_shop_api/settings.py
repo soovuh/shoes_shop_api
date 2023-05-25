@@ -40,7 +40,8 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
 
-    'shoes'
+    'shoes',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,5 @@ REST_FRAMEWORK = {
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
