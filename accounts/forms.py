@@ -7,10 +7,9 @@ from django.contrib.auth.forms import AuthenticationForm
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'password1', 'password2')
+        fields = ('name', 'email', 'password')
 
-    password1 = forms.CharField(widget=forms.PasswordInput(), label='Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -20,4 +19,5 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
+    email = forms.EmailField(widget=forms.EmailInput(), label='Email')
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')

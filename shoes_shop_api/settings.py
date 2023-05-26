@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'debug_toolbar',
+    'corsheaders',
 
     'shoes',
     'accounts'
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'debug_toolbar_force.middleware.ForceDebugToolbarMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'shoes_shop_api.urls'
@@ -148,3 +150,9 @@ INTERNAL_IPS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:5500',
+    # other allowed origins
+]

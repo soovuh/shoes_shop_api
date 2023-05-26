@@ -20,6 +20,7 @@ from rest_framework.routers import SimpleRouter
 from django.conf.urls.static import static
 from django.conf import settings
 
+# from accounts.views import UserViewSet
 from shoes.views import ShoeViewSet, BrandViewSet, HotDealsView, CarouselView
 
 router = SimpleRouter()
@@ -28,6 +29,8 @@ router.register(r'shoe', ShoeViewSet)
 router.register(r'brand', BrandViewSet)
 router.register(r'hotdeals', HotDealsView)
 router.register(r'carousel', CarouselView)
+# router.register(r'accounts', UserViewSet, basename='accounts')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
