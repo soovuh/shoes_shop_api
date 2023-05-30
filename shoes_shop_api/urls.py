@@ -31,10 +31,9 @@ router.register(r'hotdeals', HotDealsView)
 router.register(r'carousel', CarouselView)
 router.register(r'accounts', UserViewSet, basename='accounts')
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
-] + static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)
+                  path('admin/', admin.site.urls),
+                  path('__debug__/', include('debug_toolbar.urls')),
+              ] + static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls

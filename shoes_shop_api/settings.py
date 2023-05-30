@@ -158,7 +158,5 @@ CORS_ALLOWED_ORIGINS = [
     # other allowed origins
 ]
 
-
-
 # session/authentication settings
-SESSION_COOKIE_HTTPONLY=False
+SESSION_COOKIE_HTTPONLY = False
