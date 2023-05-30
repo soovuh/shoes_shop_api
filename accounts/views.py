@@ -50,22 +50,20 @@ class UserViewSet(viewsets.ViewSet):
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['get'])
-    def get_username(self, request):
-        csrf_token = request.headers['X-Csrftoken']
+    def check_authentication(self, request):
         session_id = request.COOKIES.get('sessionid')
 
-        # Retrieve the session object based on the session ID
-        session = Session.objects.get(session_key=session_id)
+        try:
+            session = Session.objects.get(session_key=session_id)
+        except Session.DoesNotExist:
+            return JsonResponse({'message': 'Session not found'}, status=404)
 
-        # Retrieve the user ID from the session data
         user_id = session.get_decoded().get('_auth_user_id')
 
-        # Retrieve the user object using the user ID
         User = get_user_model()
         try:
             user = User.objects.get(id=user_id)
             username = user.username
-            # Return the user's username in the response
-            return JsonResponse({'username': username})
+            return JsonResponse({'username': username, 'message': 'User is authenticated'})
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
