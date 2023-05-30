@@ -152,7 +152,13 @@ INTERNAL_IPS = [
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # CORS
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5500',
     # other allowed origins
 ]
+
+
+
+# session/authentication settings
+SESSION_COOKIE_HTTPONLY=False

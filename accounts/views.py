@@ -6,10 +6,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from django.contrib.sessions.models import Session
-from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 
 from django.utils.text import slugify
+
 
 class UserViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
@@ -49,27 +49,23 @@ class UserViewSet(viewsets.ViewSet):
         else:
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # @action(detail=False, methods=['get'])
-    # def get_username(self, request):
-    #     # Retrieve the CSRF token and session ID from the request headers
-    #     csrf_token = request.META.get('HTTP_X_CSRFTOKEN')
-    #     session_id = request.META.get('HTTP_COOKIE').split(';')[0].split('=')[1]
-    #
-    #     # Retrieve the session object based on the session ID
-    #     session = Session.objects.get(session_key=session_id)
-    #
-    #     # Retrieve the user ID from the session data
-    #     user_id = session.get_decoded().get('_auth_user_id')
-    #
-    #     # Retrieve the user object using the user ID
-    #     User = get_user_model()
-    #     try:
-    #         user = User.objects.get(id=user_id)
-    #         username = user.username
-    #         # Return the user's username in the response
-    #         return JsonResponse({'username': username})
-    #     except User.DoesNotExist:
-    #         return JsonResponse({'message': 'User not found'}, status=404)
+    @action(detail=False, methods=['get'])
+    def get_username(self, request):
+        csrf_token = request.headers['X-Csrftoken']
+        session_id = request.COOKIES.get('sessionid')
 
+        # Retrieve the session object based on the session ID
+        session = Session.objects.get(session_key=session_id)
 
+        # Retrieve the user ID from the session data
+        user_id = session.get_decoded().get('_auth_user_id')
 
+        # Retrieve the user object using the user ID
+        User = get_user_model()
+        try:
+            user = User.objects.get(id=user_id)
+            username = user.username
+            # Return the user's username in the response
+            return JsonResponse({'username': username})
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'User not found'}, status=404)
