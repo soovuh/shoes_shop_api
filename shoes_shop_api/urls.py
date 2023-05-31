@@ -20,7 +20,7 @@ from rest_framework.routers import SimpleRouter
 from django.conf.urls.static import static
 from django.conf import settings
 
-# from accounts.views import UserViewSet
+from accounts.views import UserViewSet, EmailVerificationView
 from shoes.views import ShoeViewSet, BrandViewSet, HotDealsView, CarouselView
 
 router = SimpleRouter()
@@ -29,12 +29,13 @@ router.register(r'shoe', ShoeViewSet)
 router.register(r'brand', BrandViewSet)
 router.register(r'hotdeals', HotDealsView)
 router.register(r'carousel', CarouselView)
-# router.register(r'accounts', UserViewSet, basename='accounts')
-
+router.register(r'accounts', UserViewSet, basename='accounts')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
-] + static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)
+                  path('admin/', admin.site.urls),
+                  path('__debug__/', include('debug_toolbar.urls')),
+                  path('accounts/verify/<int:user_id>/<str:token>/', EmailVerificationView.as_view(),
+                       name='verify_email'),
+              ] + static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls
