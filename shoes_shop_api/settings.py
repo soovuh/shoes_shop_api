@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-from private import django_secret_key, db_password
+from private import django_secret_key, db_password, mail_email, mail_password
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -160,3 +160,12 @@ CORS_ALLOWED_ORIGINS = [
 
 # session/authentication settings
 SESSION_COOKIE_HTTPONLY = False
+
+# Email verifications/send
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = mail_email
+EMAIL_HOST_PASSWORD = mail_password
+
