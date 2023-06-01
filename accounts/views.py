@@ -13,6 +13,7 @@ from django.http import JsonResponse
 
 from django.utils.text import slugify
 
+from accounts.forms import EmailForm
 from accounts.verification_email import send_verification_email
 
 
@@ -92,3 +93,31 @@ class EmailVerificationView(View):
         except User.DoesNotExist:
             pass
         return render(request, 'accounts/email_verification/verification_failed.html')
+
+
+class EmailResendView(View):
+    def post(self, request):
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            User = get_user_model()
+            user = User.objects.filter(email=email).first()
+            if not user:
+                return render(request, 'accounts/email_verification/verification_resend_failed.html', {
+                    "message": "User not found, verify the email is correct"
+                })
+            if user.is_active:
+                return render(request, 'accounts/email_verification/verification_resend_failed.html', {
+                    "message": "You have already verified your account, just login!"
+                })
+
+            token = default_token_generator.make_token(user)
+            send_verification_email(email, token, user)
+
+            return render(request, 'accounts/email_verification/verification_resend_success.html')
+
+    def get(self, request):
+        form = EmailForm()
+        return render(request, 'accounts/email_verification/resend_verification_email.html', {
+            'form': form,
+        })
