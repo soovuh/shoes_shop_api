@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.utils.text import slugify
 
 from accounts.forms import EmailForm
-from accounts.verification_email import send_verification_email
+from accounts.verification_email import send_verification_email, send_reset_email
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -119,5 +119,33 @@ class EmailResendView(View):
     def get(self, request):
         form = EmailForm()
         return render(request, 'accounts/email_verification/resend_verification_email.html', {
+            'form': form,
+        })
+
+
+class EmailPasswordResetView(View):
+    def post(self, request):
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            User = get_user_model()
+            user = User.objects.filter(email=email).first()
+            if not user:
+                return render(request, 'accounts/password_reset/reset_password_failed.html', {
+                    "message": "User not found, verify the email is correct"
+                })
+            if not user.is_active:
+                return render(request, 'accounts/password_reset/reset_password_failed.html', {
+                    "message": "Firstly, you need to verify your email!"
+                })
+
+            token = default_token_generator.make_token(user)
+            send_reset_email(email, token, user)
+
+            return render(request, 'accounts/password_reset/verification_reset_email_success.html')
+
+    def get(self, request):
+        form = EmailForm()
+        return render(request, 'accounts/password_reset/email_for_reset.html', {
             'form': form,
         })
