@@ -21,3 +21,12 @@ class CustomUserChangeForm(UserChangeForm):
 class CustomAuthenticationForm(AuthenticationForm):
     email = forms.EmailField(widget=forms.EmailInput(), label='Email')
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField()
+
+
+class ResetPasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+    password1 = forms.CharField(widget=forms.PasswordInput())

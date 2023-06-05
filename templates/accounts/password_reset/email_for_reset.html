@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-size: cover;
+            background: linear-gradient(90deg, #730fff 0%, #8c139a 100%) center;
+        }
+
+        .wrapper {
+            width: 320px;
+            height: 350px;
+            background: rgba(88, 38, 142, 0);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+
+        h1 {
+            color: #fff;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            width: 250px;
+        }
+
+        form p label {
+            display: block;
+            color: #fff;
+
+            margin-bottom: 10px;
+        }
+
+        form > p > #id_email {
+            background-color: #3e8e4100;
+            width: 250px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        form button {
+            width: 100%;
+            height: 45px;
+            background: #42164d;
+            border: none;
+            outline: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1>Enter your email to reset password</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+
+</body>
+</html>

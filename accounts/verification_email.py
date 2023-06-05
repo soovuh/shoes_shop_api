@@ -19,3 +19,19 @@ def send_verification_email(recipient_email, token, user):
         recipient_list=[recipient_email],
         html_message=message,
     )
+
+def send_reset_email(recipient_email, token, user):
+    reset_link = f'{base_link}/accounts/reset/{user.id}/{token}'
+    subject = 'Password Reset'
+    message = render_to_string('accounts/password_reset/reset_email.html', {
+        "user": user,
+        "verification_link": reset_link,
+    })
+    plain_message = strip_tags(message)
+    send_mail(
+        subject=subject,
+        message=plain_message,
+        from_email="sovuh2703@gmail.com",
+        recipient_list=[recipient_email],
+        html_message=message,
+    )
