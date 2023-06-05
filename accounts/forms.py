@@ -25,3 +25,8 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 class EmailForm(forms.Form):
     email = forms.EmailField()
+
+
+class ResetPasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+    password1 = forms.CharField(widget=forms.PasswordInput())
