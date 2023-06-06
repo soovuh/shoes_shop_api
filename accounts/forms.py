@@ -28,5 +28,5 @@ class EmailForm(forms.Form):
 
 
 class ResetPasswordForm(forms.Form):
-    password = forms.CharField(widget=forms.PasswordInput())
-    password1 = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
+    password1 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
