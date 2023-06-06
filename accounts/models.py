@@ -4,11 +4,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 from .managers import CustomUserManager
+from .phone_number import PhoneNumberField
 
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
-    phone_number = models.CharField(max_length=20, blank=True)
+    phone_number = PhoneNumberField(blank=True)
     address = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(_('is active'), default=True)

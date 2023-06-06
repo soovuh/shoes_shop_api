@@ -80,6 +80,27 @@ class UserViewSet(viewsets.ViewSet):
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
 
+    @action(detail=False, methods=['get'])
+    def get_user_info(self, request):
+        session_id = request.COOKIES.get('sessionid')
+
+        try:
+            session = Session.objects.get(session_key=session_id)
+        except Session.DoesNotExist:
+            return JsonResponse({'message': 'Session not fonud'}, status=404)
+
+        user_id = session.get_decoded().get('_auth_user_id')
+
+        User = get_user_model()
+        try:
+            user = User.objects.get(id=user_id)
+            name = user.name
+            phone_number = user.phone_number
+            address = user.address
+            return JsonResponse({'username': name, 'phone_number': phone_number, 'address': address})
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'User not found'}, status=404)
+
 
 class EmailVerificationView(View):
     def get(self, request, user_id, token):
