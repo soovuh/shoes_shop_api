@@ -96,7 +96,15 @@ class UserViewSet(viewsets.ViewSet):
             user = User.objects.get(id=user_id)
             name = user.name
             phone_number = user.phone_number
-            address = user.address
+            user_address = user.address
+            if user_address:
+                address = {
+                    'city': user_address.city,
+                    'street': user_address.street,
+                    'postcode': user_address.postcode
+                }
+            else:
+                address = None
             return JsonResponse({'username': name, 'phone_number': phone_number, 'address': address})
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
