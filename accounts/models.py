@@ -19,7 +19,7 @@ class Address(models.Model):
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     phone_number = PhoneNumberField(blank=True, unique=True)
-    address = models.ForeignKey(to=Address, on_delete=models.CASCADE, blank=True, null=True)
+    address = models.ForeignKey(to=Address, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(_('is active'), default=True)
     USERNAME_FIELD = 'email'

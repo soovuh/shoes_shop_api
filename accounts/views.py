@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from django.db.models import Count
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.views import View
@@ -144,11 +145,15 @@ class UserViewSet(viewsets.ViewSet):
                 user.name = name
                 user.save()
             if city and street and postcode:
-                address = Address.objects.create(city=city, street=street, postcode=postcode)
-                address.save()
+                try:
+                    address = Address.objects.get(city=city, street=street, postcode=postcode)
+                except Address.DoesNotExist:
+                    address = Address.objects.create(city=city, street=street, postcode=postcode)
+                    address.save()
                 user.address = address
                 user.save()
-                previous_address.delete()
+                if User.objects.filter(address=previous_address).aggregate(count=Count('id'))['count'] < 1:
+                    previous_address.delete()
             return JsonResponse({'message': "Change Success"})
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
