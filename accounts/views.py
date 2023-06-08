@@ -3,6 +3,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -10,10 +11,12 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse
+from django.db.utils import IntegrityError
 
 from django.utils.text import slugify
 
 from accounts.forms import EmailForm, ResetPasswordForm
+from accounts.models import Address
 from accounts.verification_email import send_verification_email, send_reset_email
 
 
@@ -106,6 +109,47 @@ class UserViewSet(viewsets.ViewSet):
             else:
                 address = None
             return JsonResponse({'username': name, 'phone_number': phone_number, 'address': address})
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'User not found'}, status=404)
+
+    @csrf_exempt
+    @action(detail=False, methods=['post'])
+    def change_user_info(self, request):
+        session_id = request.COOKIES.get('sessionid')
+
+        try:
+            session = Session.objects.get(session_key=session_id)
+        except Session.DoesNotExist:
+            return JsonResponse({'message': 'Session not fonud'}, status=404)
+
+        user_id = session.get_decoded().get('_auth_user_id')
+
+        User = get_user_model()
+        try:
+            user = User.objects.get(id=user_id)
+            previous_address = user.address
+            phone_number = request.data.get('phone_number')
+            name = request.data.get('username')
+            city = request.data.get('city')
+            street = request.data.get('street')
+            postcode = request.data.get('postcode')
+
+            if phone_number:
+                try:
+                    user.phone_number = phone_number
+                    user.save()
+                except IntegrityError:
+                    return JsonResponse({'message': "Phone already used"})
+            if name:
+                user.name = name
+                user.save()
+            if city and street and postcode:
+                address = Address.objects.create(city=city, street=street, postcode=postcode)
+                address.save()
+                user.address = address
+                user.save()
+                previous_address.delete()
+            return JsonResponse({'message': "Change Success"})
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
 

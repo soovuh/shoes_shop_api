@@ -161,6 +161,11 @@ CORS_ALLOWED_ORIGINS = [
 # session/authentication settings
 SESSION_COOKIE_HTTPONLY = False
 
+# CSRF settings
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5500', ]
+
 # Email verifications/send
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
@@ -168,4 +173,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = mail_email
 EMAIL_HOST_PASSWORD = mail_password
-
