@@ -5,7 +5,8 @@ from shoes.models import Shoe, Brand, HomePageCarousel
 class ShoeSerializer(serializers.ModelSerializer):
     qty = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
-    brand_name = serializers.CharField(max_length=50)
+    brand_name = serializers.CharField(source='brand.name', max_length=50)
+
 
     class Meta:
         model = Shoe
