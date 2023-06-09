@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.middleware.csrf import get_token
 from django.shortcuts import render
@@ -19,6 +20,7 @@ from django.utils.text import slugify
 from accounts.forms import EmailForm, ResetPasswordForm
 from accounts.models import Address
 from accounts.verification_email import send_verification_email, send_reset_email
+from cart.models import Cart
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -137,14 +139,22 @@ class UserViewSet(viewsets.ViewSet):
 
             if phone_number:
                 try:
-                    user.phone_number = phone_number
-                    user.save()
+                    try:
+                        phone_used = User.objects.get(phone_number=phone_number)
+                        if phone_used != user:
+                            return JsonResponse({'message': "Phone already used"})
+                    except ObjectDoesNotExist:
+                        user.phone_number = phone_number
+                        user.save()
                 except IntegrityError:
                     return JsonResponse({'message': "Phone already used"})
             if name:
                 user.name = name
                 user.save()
             if city and street and postcode:
+                city = city.capitalize()
+                street = street.capitalize()
+
                 try:
                     address = Address.objects.get(city=city, street=street, postcode=postcode)
                 except Address.DoesNotExist:
@@ -167,6 +177,8 @@ class EmailVerificationView(View):
             if default_token_generator.check_token(user, token):
                 user.is_active = True
                 user.save()
+                cart = Cart.objects.create(user=user)
+                cart.save()
                 return render(request, 'accounts/email_verification/verification_success.html')
         except User.DoesNotExist:
             pass
