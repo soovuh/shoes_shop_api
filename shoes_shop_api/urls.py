@@ -22,12 +22,14 @@ from django.conf import settings
 
 from accounts.views import UserViewSet, EmailVerificationView, EmailResendView, EmailPasswordResetView, \
     PasswordResetView
+from cart.views import CartViewSet
 from shoes.views import ShoeViewSet, BrandViewSet, HotDealsView, CarouselView
 
 router = SimpleRouter()
 
 router.register(r'shoe', ShoeViewSet)
 router.register(r'brand', BrandViewSet)
+router.register(r'cart', CartViewSet, basename='cart')
 router.register(r'hotdeals', HotDealsView)
 router.register(r'carousel', CarouselView)
 router.register(r'accounts', UserViewSet, basename='accounts')
