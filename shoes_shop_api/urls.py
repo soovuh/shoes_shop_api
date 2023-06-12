@@ -22,7 +22,7 @@ from django.conf import settings
 
 from accounts.views import UserViewSet, EmailVerificationView, EmailResendView, EmailPasswordResetView, \
     PasswordResetView
-from cart.views import CartViewSet
+from cart.views import CartViewSet, CartItemAddView
 from shoes.views import ShoeViewSet, BrandViewSet, HotDealsView, CarouselView
 
 router = SimpleRouter()
@@ -41,7 +41,8 @@ urlpatterns = [
                        name='verify_email'),
                   path('accounts/reset/<int:user_id>/<str:token>/', PasswordResetView.as_view(), name='reset_password'),
                   path('accounts/resend', EmailResendView.as_view(), name='resend_email'),
-                  path('accounts/reset/send_email', EmailPasswordResetView.as_view(), name='reset_email')
+                  path('accounts/reset/send_email', EmailPasswordResetView.as_view(), name='reset_email'),
+                  path('cart/add_item', CartItemAddView.as_view(), name='add_item'),
               ] + static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls
