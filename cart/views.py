@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from cart.models import CartItem, Cart
 from cart.serializers import CartItemSerializer
-from shoes.models import Shoe, Brand, QtySize
+from shoes.models import Shoe, QtySize
 
 
 class CartViewSet(ModelViewSet):
@@ -44,17 +44,15 @@ class CartItemAddView(View):
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
-
-        # This all need some rework!!!!!!!
-
         user_cart = Cart.objects.get(user=user)
         request_data = json.loads(request.body)
         shoe_id = request_data.get('shoe_id')
         user_size = request_data.get('user_size')
-        print(shoe_id)
         shoe = Shoe.objects.get(pk=shoe_id)
         sizes = QtySize.objects.filter(shoe=shoe, size=user_size)[0]
-        sizes.qty = sizes.qty - 1 # need rework!
+        if sizes.qty == 0:
+            return JsonResponse({'message': 'This size is out!'})
+        sizes.qty = sizes.qty - 1
         sizes.save()
         shoe.save()
         try:

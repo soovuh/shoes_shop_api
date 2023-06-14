@@ -12,6 +12,7 @@ class QtySizeForm(forms.ModelForm):
         model = QtySize
         fields = ['size', 'qty']
 
+
 class QtySizeInlineFormSet(BaseInlineFormSet):
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
@@ -20,11 +21,13 @@ class QtySizeInlineFormSet(BaseInlineFormSet):
             instance.save()
         formset.save_m2m()
 
+
 class QtySizeInline(admin.TabularInline):
     model = QtySize
     form = QtySizeForm
     formset = QtySizeInlineFormSet
     extra = 1
+
 
 @admin.register(Shoe)
 class ShoeAdmin(admin.ModelAdmin):

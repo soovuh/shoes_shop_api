@@ -51,4 +51,4 @@ class HomePageCarousel(models.Model):
     sequence = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.sequence
+        return str(self.sequence)
