@@ -67,3 +67,31 @@ class CartItemAddView(View):
             cart_item.save()
             user_cart.save()
             return JsonResponse({'message': 'Added to Cart!'}, status=200)
+
+
+class CardItemRemoveView(View):
+    def post(self, request):
+        session_id = self.request.COOKIES.get('sessionid')
+        User = get_user_model()
+        try:
+            session = Session.objects.get(session_key=session_id)
+        except Session.DoesNotExist:
+            return JsonResponse({'message': 'User not found'}, status=404)
+        try:
+            user_id = session.get_decoded().get('_auth_user_id')
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'User not found'}, status=404)
+        user_cart = Cart.objects.get(user=user)
+        request_data = json.loads(request.body)
+        shoe_id = request_data.get('shoe_id')
+        user_size = request_data.get('user_size')
+        shoe = Shoe.objects.get(pk=shoe_id)
+        cart_item = CartItem.objects.filter(cart=user_cart, shoe=shoe, user_size=user_size)[0]
+        sizes = QtySize.objects.filter(shoe=shoe, size=user_size)[0]
+        sizes.qty += int(cart_item.user_qty)
+        cart_item.delete()
+        sizes.save()
+        shoe.save()
+        user_cart.save()
+        return JsonResponse({'message': 'CartItem Removed'})
