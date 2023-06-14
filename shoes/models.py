@@ -11,6 +11,7 @@ class Brand(models.Model):
 class QtySize(models.Model):
     size = models.IntegerField()
     qty = models.IntegerField()
+    shoe = models.ForeignKey('Shoe', on_delete=models.CASCADE, related_name='sizes')
 
     def __str__(self):
         return f'{self.size}: {self.qty}'
@@ -40,7 +41,6 @@ class Shoe(models.Model):
     sale = models.DecimalField(max_digits=3, decimal_places=2, default=0)
     views = models.IntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
-    qty = models.ManyToManyField(QtySize)
 
     def __str__(self):
         return self.name
@@ -51,4 +51,4 @@ class HomePageCarousel(models.Model):
     sequence = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.sequence
+        return str(self.sequence)

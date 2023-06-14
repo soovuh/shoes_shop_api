@@ -12,7 +12,7 @@ from shoes.serializers import ShoeSerializer, BrandSerializer, HotDealsSerialize
 class ShoeViewSet(ModelViewSet):
     queryset = Shoe.objects.all().annotate(
         brand_name=Subquery(Brand.objects.filter(pk=OuterRef('brand_id')).values('name')[:1])
-    ).prefetch_related('qty')
+    ).prefetch_related('sizes')
     serializer_class = ShoeSerializer
     # search url looks like this: http://127.0.0.1:8000/shoe/?search=adidas
     filter_backends = [DjangoFilterBackend, SearchFilter]
