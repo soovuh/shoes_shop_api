@@ -103,6 +103,7 @@ class UserViewSet(viewsets.ViewSet):
             name = user.name
             phone_number = user.phone_number
             user_address = user.address
+            email = user.email
             if user_address:
                 address = {
                     'city': user_address.city,
@@ -111,7 +112,7 @@ class UserViewSet(viewsets.ViewSet):
                 }
             else:
                 address = None
-            return JsonResponse({'username': name, 'phone_number': phone_number, 'address': address})
+            return JsonResponse({'username': name, 'phone_number': phone_number, 'address': address, 'email': email})
         except User.DoesNotExist:
             return JsonResponse({'message': 'User not found'}, status=404)
 

@@ -2,6 +2,7 @@ from datetime import timedelta
 from shoes_shop_api.celery import app
 from django.utils import timezone
 
+
 @app.task
 def clear_expired_carts():
     thresh_hold = timedelta(hours=3)
@@ -9,7 +10,6 @@ def clear_expired_carts():
     from shoes.models import QtySize
     from .models import Cart
 
-    print('start')
     carts = Cart.objects.filter(last_modified__lt=timezone.now() - thresh_hold)
     for cart in carts:
         for item in cart.cartitem_set.all():
@@ -21,5 +21,3 @@ def clear_expired_carts():
             item.delete()
 
         cart.save()
-
-    print('end')
