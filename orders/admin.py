@@ -1,8 +1,14 @@
 from django.contrib import admin
 
-from orders.models import Order
+from orders.models import Order, OrderItem
 
 
-@admin.register(Order)
-class ShoeAdmin(admin.ModelAdmin):
-    pass
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [OrderItemInline]
+
+
+admin.site.register(Order, OrderAdmin)
