@@ -18,6 +18,49 @@ from orders.models import Order, OrderItem, OrderAddress
 
 
 class OrderViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def get_user_orders(self, request):
+        session_id = request.COOKIES.get('sessionid')
+
+        try:
+            session = Session.objects.get(session_key=session_id)
+        except Session.DoesNotExist:
+            return JsonResponse({'message': 'Session not fonud'}, status=404)
+
+        user_id = session.get_decoded().get('_auth_user_id')
+
+        User = get_user_model()
+        try:
+            user = User.objects.get(id=user_id)
+            orders = Order.objects.filter(user=user)
+
+            order_details = []
+            for order in orders:
+                order_items = order.orderitem_set.select_related('shoe')
+
+                items = []
+                total_price = 0
+                for item in order_items:
+                    shoe = item.shoe
+                    total_price += item.user_qty * shoe.price
+                    items.append({
+                        'shoe_name': shoe.name,
+                        'user_qty': item.user_qty,
+                        'user_size': item.user_size,
+                        'image_url': shoe.image.url if shoe.image else None
+                    })
+
+                order_details.append({
+                    'order_name': order.name,
+                    'status': order.get_status_display(),
+                    'items': items,
+                    'total_price': total_price,
+                    'created_at': order.created_at
+                })
+            return JsonResponse(order_details, safe=False)
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'User not found'}, status=404)
+
     @csrf_exempt
     @action(detail=False, methods=['post'])
     def create_order(self, request):
