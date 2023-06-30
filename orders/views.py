@@ -67,8 +67,11 @@ class OrderViewSet(viewsets.ViewSet):
             order_address = OrderAddress.objects.create(city=address.city, postcode=address.postcode,
                                                         street=address.street)
             cart = Cart.objects.get(user=user)
+            if len(cart.cartitem_set.all()) <= 0:
+                return JsonResponse({"message": "Cart is empty!"})
             order = Order.objects.create(user=user, address=order_address, total=total,
                                          name=f'{uuid.uuid4().hex[:6]}')
+
             for item in cart.cartitem_set.all():
                 order_item = OrderItem.objects.create(order=order, shoe=item.shoe, user_size=item.user_size,
                                                       user_qty=item.user_qty)
