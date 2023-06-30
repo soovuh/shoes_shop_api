@@ -23,6 +23,7 @@ from django.conf import settings
 from accounts.views import UserViewSet, EmailVerificationView, EmailResendView, EmailPasswordResetView, \
     PasswordResetView
 from cart.views import CartViewSet, CartItemAddView, CartItemRemoveView, CartItemChangeQtyView
+from orders.views import OrderViewSet
 from shoes.views import ShoeViewSet, BrandViewSet, HotDealsView, CarouselView
 
 router = SimpleRouter()
@@ -33,6 +34,7 @@ router.register(r'cart', CartViewSet, basename='cart')
 router.register(r'hotdeals', HotDealsView)
 router.register(r'carousel', CarouselView)
 router.register(r'accounts', UserViewSet, basename='accounts')
+router.register(r'orders', OrderViewSet, basename='orders')
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
