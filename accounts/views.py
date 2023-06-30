@@ -21,6 +21,7 @@ from accounts.forms import EmailForm, ResetPasswordForm
 from accounts.models import Address
 from accounts.verification_email import send_verification_email, send_reset_email
 from cart.models import Cart
+from private import frontend_page, base_link
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -42,6 +43,8 @@ class UserViewSet(viewsets.ViewSet):
 
             token = default_token_generator.make_token(user)
             send_verification_email(email, token, user)
+            cart = Cart.objects.create(user=user)
+            cart.save()
 
             return Response({'message': 'Registration successful'})
         except Exception as e:
@@ -178,12 +181,17 @@ class EmailVerificationView(View):
             if default_token_generator.check_token(user, token):
                 user.is_active = True
                 user.save()
-                cart = Cart.objects.create(user=user)
-                cart.save()
-                return render(request, 'accounts/email_verification/verification_success.html')
+
+                return render(request, 'accounts/email_verification/verification_success.html', {
+                    'frontend_page': frontend_page,
+                    'base_link': base_link,
+                })
         except User.DoesNotExist:
             pass
-        return render(request, 'accounts/email_verification/verification_failed.html')
+        return render(request, 'accounts/email_verification/verification_failed.html', {
+            'frontend_page': frontend_page,
+            'base_link': base_link,
+        })
 
 
 class EmailResendView(View):
@@ -195,22 +203,31 @@ class EmailResendView(View):
             user = User.objects.filter(email=email).first()
             if not user:
                 return render(request, 'accounts/email_verification/verification_resend_failed.html', {
-                    "message": "User not found, verify the email is correct"
+                    "message": "User not found, verify the email is correct",
+                    'frontend_page': frontend_page,
+                    'base_link': base_link,
                 })
             if user.is_active:
                 return render(request, 'accounts/email_verification/verification_resend_failed.html', {
-                    "message": "You have already verified your account, just login!"
+                    "message": "You have already verified your account, just login!",
+                    'frontend_page': frontend_page,
+                    'base_link': base_link,
                 })
 
             token = default_token_generator.make_token(user)
             send_verification_email(email, token, user)
 
-            return render(request, 'accounts/email_verification/verification_resend_success.html')
+            return render(request, 'accounts/email_verification/verification_resend_success.html', {
+                'frontend_page': frontend_page,
+                'base_link': base_link,
+            })
 
     def get(self, request):
         form = EmailForm()
         return render(request, 'accounts/email_verification/resend_verification_email.html', {
             'form': form,
+            'frontend_page': frontend_page,
+            'base_link': base_link,
         })
 
 
@@ -223,22 +240,31 @@ class EmailPasswordResetView(View):
             user = User.objects.filter(email=email).first()
             if not user:
                 return render(request, 'accounts/password_reset/reset_password_failed.html', {
-                    "message": "User not found, verify the email is correct"
+                    "message": "User not found, verify the email is correct",
+                    'frontend_page': frontend_page,
+                    'base_link': base_link,
                 })
             if not user.is_active:
                 return render(request, 'accounts/password_reset/reset_password_failed.html', {
-                    "message": "Firstly, you need to verify your email!"
+                    "message": "Firstly, you need to verify your email!",
+                    'frontend_page': frontend_page,
+                    'base_link': base_link,
                 })
 
             token = default_token_generator.make_token(user)
             send_reset_email(email, token, user)
 
-            return render(request, 'accounts/password_reset/verification_reset_email_success.html')
+            return render(request, 'accounts/password_reset/verification_reset_email_success.html', {
+                'frontend_page': frontend_page,
+                'base_link': base_link,
+            })
 
     def get(self, request):
         form = EmailForm()
         return render(request, 'accounts/password_reset/email_for_reset.html', {
             'form': form,
+            'frontend_page': frontend_page,
+            'base_link': base_link,
         })
 
 
@@ -251,11 +277,15 @@ class PasswordResetView(View):
                 form = ResetPasswordForm()
                 return render(request, 'accounts/password_reset/reset_password.html', {
                     'form': form,
+                    'frontend_page': frontend_page,
+                    'base_link': base_link,
                 })
         except User.DoesNotExist:
             pass
         return render(request, 'accounts/password_reset/reset_password_failed.html', {
             'message': 'Reset Email expired!',
+            'frontend_page': frontend_page,
+            'base_link': base_link,
         })
 
     def post(self, request, user_id, token):
@@ -272,9 +302,14 @@ class PasswordResetView(View):
                         hashed_password = make_password(password)
                         user.password = hashed_password
                         user.save()
-                        return render(request, 'accounts/password_reset/reset_password_success.html')
+                        return render(request, 'accounts/password_reset/reset_password_success.html', {
+                            'frontend_page': frontend_page,
+                            'base_link': base_link,
+                        })
         except User.DoesNotExist:
             pass
         return render(request, 'accounts/password_reset/reset_password_failed.html', {
             'message': 'Passwords do not match or the password does not match the standards!',
+            'frontend_page': frontend_page,
+            'base_link': base_link,
         })

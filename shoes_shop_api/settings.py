@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
-from private import django_secret_key, db_password, mail_email, mail_password, frontend_page
+from private import django_secret_key, db_password, mail_email, mail_password, frontend_page, internal_ips, redis_port, \
+    redis_host
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
     'corsheaders',
 
     'shoes',
@@ -55,8 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-    'debug_toolbar_force.middleware.ForceDebugToolbarMiddleware',
+
     'corsheaders.middleware.CorsMiddleware',
 ]
 
@@ -148,7 +147,7 @@ REST_FRAMEWORK = {
 
 # DEBUG, for json use ?debug-toolbar
 INTERNAL_IPS = [
-    "127.0.0.1",
+    internal_ips
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -178,10 +177,10 @@ EMAIL_HOST_PASSWORD = mail_password
 
 
 # Celery & Redis
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = '6379'
+REDIS_HOST = redis_port
+REDIS_PORT = redis_host
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-CELERY_BROKER_TRANPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'

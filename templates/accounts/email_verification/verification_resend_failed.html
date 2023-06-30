@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verification Resend Failed</title>
-    <style>
+    <style>@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
         * {
             margin: 0;
             padding: 0;
@@ -53,7 +53,7 @@
 
 <h1>Resending verification email failed!</h1>
 
-<span>{{ message }}<br> <a href="http://127.0.0.1:5500/public/pages/login.html">Login page</a><br><a href="http://127.0.0.1:8000/accounts/resend">Resend one more time</a></span>
+<span>{{ message }}<br> <a href="{{ frontend_page }}/public/pages/login.html">Login page</a><br><a href="{{ base_link}}/accounts/resend">Resend one more time</a></span>
 
 
 </body>
