@@ -39,10 +39,8 @@ class OrderViewSet(viewsets.ViewSet):
                 order_items = order.orderitem_set.select_related('shoe')
 
                 items = []
-                total_price = 0
                 for item in order_items:
                     shoe = item.shoe
-                    total_price += item.user_qty * shoe.price
                     items.append({
                         'shoe_name': shoe.name,
                         'user_qty': item.user_qty,
@@ -54,7 +52,7 @@ class OrderViewSet(viewsets.ViewSet):
                     'order_name': order.name,
                     'status': order.get_status_display(),
                     'items': items,
-                    'total_price': total_price,
+                    'total_price': order.total,
                     'created_at': order.created_at
                 })
             return JsonResponse(order_details, safe=False)
